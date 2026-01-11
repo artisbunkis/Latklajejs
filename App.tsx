@@ -6,7 +6,7 @@ import FilterBar from './components/FilterBar';
 import Logo from './components/Logo';
 import LoadingOverlay from './components/LoadingOverlay';
 import HistoryMenu from './components/HistoryMenu';
-import { generateRandomLatviaCoordinates } from './utils/geo';
+import { generateRandomLatviaCoordinates, isValidCoord } from './utils/geo'; // Import isValidCoord
 import { fetchLocationDetails } from './services/geminiService';
 import { Coordinates, LocationInfo, HistoryItem, NearbyPlace } from './types';
 import { INITIAL_VIEW } from './constants';
@@ -42,7 +42,7 @@ const App: React.FC = () => {
         const parsed = JSON.parse(savedHistory);
         if (Array.isArray(parsed)) {
           const validHistory = parsed.filter((item: any) => 
-            item && item.coords && !isNaN(item.coords.lat) && !isNaN(item.coords.lng)
+            item && item.coords && isValidCoord(item.coords) // Use isValidCoord here too for historical data
           );
           setHistory(validHistory);
         }
@@ -73,7 +73,7 @@ const App: React.FC = () => {
     // The Gemini service will use the name to find real coords and ignore these
     const searchCoords = targetCoords || generateRandomLatviaCoordinates();
     
-    if (!searchCoords || isNaN(searchCoords.lat) || isNaN(searchCoords.lng)) {
+    if (!searchCoords || !isValidCoord(searchCoords)) { // Use isValidCoord for searchCoords validation
         setLoading(false);
         setError("Nederīgas koordinātas.");
         return;
@@ -91,8 +91,8 @@ const App: React.FC = () => {
     try {
       const info = await fetchLocationDetails(searchCoords, targetName, selectedFilters) as LocationInfo & { exactCoordinates?: Coordinates };
       
-      // Use the exact coordinates from the AI if available (High Precision), otherwise fallback to searchCoords
-      const finalCoords = info.exactCoordinates || searchCoords;
+      // Use the exact coordinates from the AI if available AND VALID, otherwise fallback to searchCoords
+      const finalCoords = (info.exactCoordinates && isValidCoord(info.exactCoordinates)) ? info.exactCoordinates : searchCoords;
       
       setLocationInfo(info);
       setPinLocation(finalCoords);
@@ -142,7 +142,7 @@ const App: React.FC = () => {
   };
 
   const restoreHistoryItem = (item: HistoryItem, updateIndex = true) => {
-    if (!item.coords || isNaN(item.coords.lat) || isNaN(item.coords.lng)) return;
+    if (!item.coords || !isValidCoord(item.coords)) return; // Use isValidCoord here too
     
     setPinLocation(item.coords);
     setLocationInfo(item.info);

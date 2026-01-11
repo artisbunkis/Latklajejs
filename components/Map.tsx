@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { Coordinates, NearbyPlace } from '../types';
 import { MAP_ATTRIBUTION, MAP_TILE_LAYER, MAP_SATELLITE_LAYER, MAP_SATELLITE_ATTRIBUTION, getCategoryStyle } from '../constants';
+import { isValidCoord } from '../utils/geo'; // Import isValidCoord
 
 interface MapProps {
   center: Coordinates;
@@ -29,9 +30,7 @@ const Map: React.FC<MapProps> = ({ center, zoom, pinLocation, hoveredPlace, mapS
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isValidCoord = (c: Coordinates | null | undefined): boolean => {
-    return !!c && typeof c.lat === 'number' && typeof c.lng === 'number' && !isNaN(c.lat) && !isNaN(c.lng);
-  };
+  // Removed local isValidCoord as it's now imported from utils/geo.ts
 
   const inferCategoryFromText = (type: string): string => {
     const t = type.toLowerCase();

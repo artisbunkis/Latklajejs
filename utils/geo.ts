@@ -113,3 +113,7 @@ export const calculateDistance = (start: Coordinates, end: Coordinates): string 
 function deg2rad(deg: number) {
   return deg * (Math.PI / 180);
 }
+
+export const isValidCoord = (c: Coordinates | null | undefined): boolean => {
+  return !!c && typeof c.lat === 'number' && typeof c.lng === 'number' && !isNaN(c.lat) && !isNaN(c.lng);
+};

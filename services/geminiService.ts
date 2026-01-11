@@ -1,6 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Coordinates, LocationInfo } from "../types";
-import { calculateDistance } from "../utils/geo";
+import { calculateDistance, isValidCoord } from "../utils/geo"; // Import isValidCoord
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
@@ -156,9 +156,15 @@ CONTENT RULES (Latvian):
     const text = cleanJsonString(response.text || "{}");
     const parsedData = JSON.parse(text) as LocationInfo & { exactCoordinates?: Coordinates, website?: string, isOfficialGoogleMapsWebsite?: boolean };
     
-    // Safety check: Ensure coordinates are not 0,0
+    // NEW: Robustly validate exactCoordinates from AI response for NaN values
+    if (parsedData.exactCoordinates && !isValidCoord(parsedData.exactCoordinates)) {
+        console.warn("AI returned invalid exactCoordinates (NaN detected), falling back to approximate input.");
+        parsedData.exactCoordinates = null; // Clear if invalid, will be handled by next fallback
+    }
+
+    // Safety check: Ensure coordinates are not 0,0 (or now, null/invalid from above check)
     if (!parsedData.exactCoordinates || (parsedData.exactCoordinates.lat === 0 && parsedData.exactCoordinates.lng === 0)) {
-        parsedData.exactCoordinates = coords;
+        parsedData.exactCoordinates = coords; // Fallback to the initial search coordinates
     }
 
     // Add Official Website to sources ONLY if strictly validated by model
