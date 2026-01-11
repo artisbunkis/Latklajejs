@@ -1,3 +1,7 @@
+// IMPORTANT: For deployment to GitHub Pages (or any static host),
+// you MUST run 'npm run build' and configure your hosting to serve
+// the 'dist/' folder. Do NOT deploy this 'index.tsx' file directly.
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
