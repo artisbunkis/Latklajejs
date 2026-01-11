@@ -53,7 +53,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
             /* Mobile Layout: Vertical Popup from Top Right (below buttons) */
             top-24 right-4 
             flex flex-col gap-2 
-            bg-white/95 backdrop-blur-xl p-2 rounded-2xl shadow-2xl 
+            bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-2xl 
             max-h-[60vh] w-64 border border-white/20 origin-top-right
 
             /* Desktop Layout: Horizontal Strip to Left of Button Group */
@@ -74,15 +74,15 @@ const FilterBar: React.FC<FilterBarProps> = ({
             }
         `}
     >
-        {/* Content Container */}
+        {/* Content Container - Ensure no hard overflow clips scaling elements unnecessarily on mobile */}
         <div 
-            className="w-full h-full relative overflow-hidden md:rounded-l-full"
+            className="w-full h-full relative md:rounded-l-full"
         >
              {/* Scrollable List */}
              <div 
                 className={`
-                    flex flex-col gap-2 w-full max-h-[calc(60vh-16px)] overflow-y-auto overflow-x-hidden
-                    md:flex-row md:items-center md:h-full md:max-h-none md:overflow-x-auto md:overflow-y-hidden md:gap-2 md:px-2
+                    flex flex-col gap-3 w-full max-h-[calc(60vh-32px)] overflow-y-auto p-2
+                    md:flex-row md:items-center md:h-full md:max-h-none md:overflow-x-auto md:overflow-y-hidden md:gap-2 md:px-2 md:p-0
                     no-scrollbar
                     
                     /* Desktop Fade Mask */
@@ -114,16 +114,22 @@ const FilterBar: React.FC<FilterBarProps> = ({
                     const isSelected = selectedFilters.includes(category);
 
                     return (
-                        <div key={category} className="shrink-0">
+                        <div key={category} className={`shrink-0 relative ${isSelected ? 'z-20' : 'z-0'}`}>
                             <button
                                 onClick={() => onToggleFilter(category)}
                                 className={`
-                                    h-10 px-4 rounded-full text-xs font-semibold transition-all flex items-center gap-2 shadow-sm border whitespace-nowrap w-full md:w-auto justify-start md:justify-center
+                                    h-10 px-4 rounded-full text-xs font-semibold transition-all flex items-center gap-2 border whitespace-nowrap 
                                     
-                                    md:shadow-sm md:border-white/60 md:backdrop-blur-md md:bg-white/80
+                                    /* Mobile: Center buttons, constrained width to allow scaling without clip */
+                                    w-[95%] mx-auto justify-start shadow-sm
+                                    
+                                    /* Desktop: Auto width, Stronger Shadow */
+                                    md:w-auto md:justify-center
+                                    md:shadow-md md:hover:shadow-lg
+                                    md:border-white/60 md:backdrop-blur-md md:bg-white/90
 
                                     ${isSelected 
-                                        ? 'text-white shadow-lg scale-105 border-transparent !bg-opacity-100' 
+                                        ? 'text-white shadow-xl scale-105 border-transparent !bg-opacity-100 z-10' 
                                         : `${style.bgClass} ${style.textClass} hover:brightness-95 border-slate-100/50`
                                     }
                                 `}
@@ -140,7 +146,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                  {selectedFilters.length > 0 && (
                     <button 
                         onClick={onClearFilters}
-                        className="shrink-0 h-10 px-4 rounded-full text-xs font-bold text-white shadow-md transition-all hover:scale-105 flex items-center justify-center gap-2 whitespace-nowrap w-full md:w-auto md:ml-2"
+                        className="shrink-0 h-10 px-4 rounded-full text-xs font-bold text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center justify-center gap-2 whitespace-nowrap w-[95%] mx-auto md:w-auto md:ml-2"
                         style={{ backgroundColor: '#A4343A' }}
                     >
                         <span>Notīrīt</span>

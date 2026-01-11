@@ -1,3 +1,5 @@
+
+
 export interface Coordinates {
   lat: number;
   lng: number;
@@ -20,12 +22,23 @@ export type LocationType =
   | 'Museum' | 'Church' | 'Tower' | 'Trail' | 'Hill'
   | 'Cafe' | 'Other';
 
+export type Region = 'Kurzeme' | 'Vidzeme' | 'Latgale' | 'Zemgale' | 'Sēlija' | 'Rīga' | null;
+
+export interface Fact {
+  text: string;
+  sourceUrl?: string;
+}
+
 export interface LocationInfo {
   title: string;
   description: string;
-  facts: string[];
+  facts: Fact[]; // Updated from string[]
   nearbyPlaces: NearbyPlace[];
   type: LocationType;
+  region: Region;
+  sources?: { uri: string; title: string }[];
+  exactCoordinates?: Coordinates;
+  website?: string;
 }
 
 export interface HistoryItem {

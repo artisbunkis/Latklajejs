@@ -1,3 +1,4 @@
+
 // Latvia approximate bounds for random generation
 // We use a simplified set of bounds to keep points mostly within the country
 export const LATVIA_BOUNDS = {
@@ -28,6 +29,15 @@ export interface CategoryStyle {
 }
 
 export const CATEGORY_CONFIG: Record<string, CategoryStyle> = {
+  // Regions (Kultūrvēsturiskie novadi)
+  'Kurzeme': { label: 'Kurzeme', color: '#9f1239', bgClass: 'bg-rose-100', textClass: 'text-rose-900', gradient: 'from-rose-900 to-red-800' },
+  'Vidzeme': { label: 'Vidzeme', color: '#1e3a8a', bgClass: 'bg-blue-100', textClass: 'text-blue-900', gradient: 'from-blue-900 to-indigo-800' },
+  'Latgale': { label: 'Latgale', color: '#14532d', bgClass: 'bg-green-100', textClass: 'text-green-900', gradient: 'from-green-900 to-emerald-800' },
+  'Zemgale': { label: 'Zemgale', color: '#713f12', bgClass: 'bg-amber-100', textClass: 'text-amber-900', gradient: 'from-amber-900 to-orange-800' },
+  'Sēlija': { label: 'Sēlija', color: '#064e3b', bgClass: 'bg-teal-100', textClass: 'text-teal-900', gradient: 'from-teal-900 to-cyan-800' },
+  'Rīga': { label: 'Rīga', color: '#334155', bgClass: 'bg-slate-100', textClass: 'text-slate-900', gradient: 'from-slate-900 to-gray-800' },
+
+  // Nature
   'Forest': { label: 'Mežs', color: '#166534', bgClass: 'bg-green-50', textClass: 'text-green-700', gradient: 'from-emerald-900 to-green-800' },
   'Nature': { label: 'Daba', color: '#166534', bgClass: 'bg-green-50', textClass: 'text-green-700', gradient: 'from-emerald-900 to-green-800' },
   'Field': { label: 'Lauks', color: '#854d0e', bgClass: 'bg-yellow-50', textClass: 'text-yellow-700', gradient: 'from-yellow-800 to-amber-700' },
@@ -53,7 +63,8 @@ export const CATEGORY_CONFIG: Record<string, CategoryStyle> = {
   'Other': { label: 'Cits', color: '#475569', bgClass: 'bg-gray-50', textClass: 'text-gray-700', gradient: 'from-gray-900 to-slate-700' },
 };
 
-export const getCategoryStyle = (type: string): CategoryStyle => {
+export const getCategoryStyle = (type: string | null | undefined): CategoryStyle => {
+  if (!type) return CATEGORY_CONFIG['Other'];
   // Normalize type to match keys
   const key = Object.keys(CATEGORY_CONFIG).find(k => k.toLowerCase() === type.toLowerCase());
   return CATEGORY_CONFIG[key || 'Other'];
@@ -61,6 +72,7 @@ export const getCategoryStyle = (type: string): CategoryStyle => {
 
 // Filter categories (ordered for UI)
 export const FILTER_CATEGORIES = [
+  'Kurzeme', 'Vidzeme', 'Latgale', 'Zemgale', 'Sēlija', // Regions first
   'Manor', 'Castle', 'Ruins', 
   'Tower', 'Trail', 'Hill',
   'Lake', 'River', 'Sea', 

@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Scrollbar Utilities */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Custom Pin Styles */
+.custom-pin-container svg {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.custom-pin-container:hover svg {
+  transform: scale(1.1) translateY(-5px);
+}
+
+/* Google AI Glow Animation */
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotation {
+  0% { --gradient-angle: 0deg; }
+  100% { --gradient-angle: 360deg; }
+}
+
+.google-ai-glow {
+  position: relative;
+  /* Make the main button background transparent to show pseudo-elements */
+  background: transparent !important;
+  border: none !important;
+  /* Create a new stacking context */
+  isolation: isolate; 
+}
+
+/* Ensure button content (text, icons) stays on top of the background pseudo-elements */
+.google-ai-glow > * {
+  position: relative;
+  z-index: 10; /* Higher than pseudo-elements */
+}
+
+/* The Gradient Border (Outer Layer) */
+.google-ai-glow::before {
+  content: "";
+  position: absolute;
+  /* Adjust this value to control border thickness around the actual button area */
+  inset: -3px; 
+  z-index: -2; /* Behind the white background */
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--gradient-angle),
+    #4285F4,
+    #EA4335,
+    #FBBC04,
+    #34A853,
+    #4285F4
+  );
+  animation: rotation 3s linear infinite;
+}
+
+/* The Solid White Background (Inner Layer, covering the middle of the gradient) */
+.google-ai-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0; /* Exactly covers the button's content area */
+  z-index: -1; /* Between the button content and the glow border */
+  border-radius: inherit;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
